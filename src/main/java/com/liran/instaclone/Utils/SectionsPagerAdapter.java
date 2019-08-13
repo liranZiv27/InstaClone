@@ -1,4 +1,4 @@
-package com.liran.instaclone.Main;
+package com.liran.instaclone.Utils;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

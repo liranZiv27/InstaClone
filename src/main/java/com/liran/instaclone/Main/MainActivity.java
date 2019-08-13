@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.liran.instaclone.R;
 import com.liran.instaclone.Utils.BottomNavigationViewHelper;
+import com.liran.instaclone.Utils.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
     private Context mContext = MainActivity.this;
