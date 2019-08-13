@@ -23,10 +23,12 @@ public class BottomNavigationViewHelper {
     private static final String TAG = "BottomNavigationViewHel";
     public static void setupBottomNavigationView(BottomNavigationViewEx bottomNavigationViewEx){
         Log.d(TAG, "setupBottomNavigationView: ");
+        Log.d(TAG, "setting navigation parameters ");
         bottomNavigationViewEx.enableAnimation(false);
         bottomNavigationViewEx.enableItemShiftingMode(false);
         bottomNavigationViewEx.enableShiftingMode(false);
         bottomNavigationViewEx.setTextVisibility(false);
+        Log.d(TAG, "finished setting navigation parameters ");
     }
     public static void enableNavigation(final Context context, BottomNavigationViewEx view){
         view.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -45,13 +47,13 @@ public class BottomNavigationViewHelper {
                         Intent circleIntent = new Intent(context, ShareActivity.class);//ACTIVITY_NUM 2
                         context.startActivity(circleIntent);
                         break;
-                    case R.id.ic_user:
-                        Intent profileIntent = new Intent(context, ProfileActivity.class);//ACTIVITY_NUM 3
-                        context.startActivity(profileIntent);
-                        break;
                     case R.id.ic_heart:
-                        Intent likesIntent = new Intent(context, LikesActivity.class);//ACTIVITY_NUM 4
+                        Intent likesIntent = new Intent(context, LikesActivity.class);//ACTIVITY_NUM 3
                         context.startActivity(likesIntent);
+                        break;
+                    case R.id.ic_user:
+                        Intent profileIntent = new Intent(context, ProfileActivity.class);//ACTIVITY_NUM 4
+                        context.startActivity(profileIntent);
                         break;
                 }
                 return false;

@@ -19,7 +19,7 @@ import com.liran.instaclone.Utils.BottomNavigationViewHelper;
 public class LikesActivity extends AppCompatActivity{
     private static final String TAG = "LikesActivity";
     private Context mContext = LikesActivity.this;
-    private static final int ACTIVITY_NUM = 4;
+    private static final int ACTIVITY_NUM = 3;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
