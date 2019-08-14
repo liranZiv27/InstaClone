@@ -32,7 +32,14 @@ dependencies {
 
     //bottom navigation view ex bar
     compile 'com.github.ittianyu:BottomNavigationViewEx:1.2.4'
-    compile "com.android.support:design:26.+"
+    compile "com.android.support:design:26.1.0"
     //circle image
     implementation 'de.hdodenhof:circleimageview:3.0.0'
+    //image loader
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    compile 'com.google.firebase:firebase-auth:10.2.6'
+    //firebase database
+    compile 'com.google.firebase:firebase-database:10.2.6'
 }
+//firebase
+apply plugin: 'com.google.gms.google-services'
