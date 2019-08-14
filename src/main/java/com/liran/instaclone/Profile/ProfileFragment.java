@@ -31,6 +31,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.liran.instaclone.Utils.FirebaseMethods;
+import com.liran.instaclone.Utils.UniversalImageLoader;
+import com.liran.instaclone.models.UserAccountSettings;
+import com.liran.instaclone.models.UserSettings;
 
 /**
  * Created by Liran on 14/08/2019.
@@ -48,6 +52,7 @@ public class ProfileFragment extends Fragment {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
+    private FirebaseMethods mFirebaseMethods;
 
     private TextView mPosts, mFollowers, mFollowing, mDisplayName, mUsername, mWebsite, mDescription;
     private ProgressBar mProgressBar;
@@ -78,13 +83,34 @@ public class ProfileFragment extends Fragment {
         profileMenu = view.findViewById(R.id.profileMenu);
         bottomNavigationView = view.findViewById(R.id.bottomNavViewBar);
         mContext = getActivity();
+        mFirebaseMethods = new FirebaseMethods(getActivity());
         Log.d(TAG, "onCreateView: stared.");
 
 
         setupBottomNavigationView();
         setupToolbar();
+        setupFirebaseAuth();
 
         return view;
+    }
+    private void setProfileWidgets(UserSettings userSettings){
+//        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.toString());
+//        Log.d(TAG, "setProfileWidgets: setting widgets with data retrieving from firebase database: " + userSettings.getSettings().getUsername());
+
+
+        //User user = userSettings.getUser();
+        UserAccountSettings settings = userSettings.getSettings();
+
+        UniversalImageLoader.setImage(settings.getProfile_photo(), mProfilePhoto, null, "");
+
+        mDisplayName.setText(settings.getDisplay_name());
+        mUsername.setText(settings.getUsername());
+        mWebsite.setText(settings.getWebsite());
+        mDescription.setText(settings.getDescription());
+        mPosts.setText(String.valueOf(settings.getPosts()));
+        mFollowing.setText(String.valueOf(settings.getFollowing()));
+        mFollowers.setText(String.valueOf(settings.getFollowers()));
+        mProgressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -153,6 +179,7 @@ public class ProfileFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //retrieve user information from the database
+                setProfileWidgets(mFirebaseMethods.getUserSettings(dataSnapshot));
 
 
                 //retrieve images for the user in question
@@ -165,7 +192,6 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-
 
     @Override
     public void onStart() {
