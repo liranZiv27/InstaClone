@@ -54,6 +54,10 @@ public class ShareActivity extends AppCompatActivity{
         return mViewPager.getCurrentItem();
     }
 
+    public int getTask(){
+        Log.d(TAG, String.format("getTask: TASK: %d", getIntent().getFlags()));
+        return getIntent().getFlags();
+    }
     /**
      * setup viewpager for manager the tabs
      */

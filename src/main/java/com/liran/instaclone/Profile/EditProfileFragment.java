@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.liran.instaclone.R;
+import com.liran.instaclone.Share.ShareActivity;
 import com.liran.instaclone.Utils.FirebaseMethods;
 import com.liran.instaclone.Utils.UniversalImageLoader;
 import com.liran.instaclone.dialogs.ConfirmPasswordDialog;
@@ -36,6 +37,7 @@ import com.liran.instaclone.models.UserSettings;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import android.content.Intent;
 
 /**
  * Created by Liran on 13/08/2019.
@@ -268,7 +270,19 @@ public class EditProfileFragment extends Fragment implements
         mDescription.setText(settings.getDescription());
         mEmail.setText(userSettings.getUser().getEmail());
         mPhoneNumber.setText(String.valueOf(userSettings.getUser().getPhone_number()));
+
+        mChangeProfilePhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: changing profile photo");
+                Intent intent = new Intent(getActivity(), ShareActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //268435456
+                getActivity().startActivity(intent);
+                getActivity().finish();
+            }
+        });
     }
+
        /*
     ------------------------------------ Firebase ---------------------------------------------
      */
