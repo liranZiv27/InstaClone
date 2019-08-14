@@ -1,34 +1,58 @@
 package com.liran.instaclone.Profile;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
-import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.liran.instaclone.R;
-import com.liran.instaclone.Utils.BottomNavigationViewHelper;
-import com.liran.instaclone.Utils.GridImageAdapter;
-import com.liran.instaclone.Utils.UniversalImageLoader;
-
-import java.util.ArrayList;
+import com.liran.instaclone.Utils.ViewCommentsFragment;
+import com.liran.instaclone.Utils.ViewPostFragment;
+import com.liran.instaclone.models.Photo;
 
 /**
  * Created by Liran on 13/08/2019.
  */
 
-public class ProfileActivity extends AppCompatActivity{
+public class ProfileActivity extends AppCompatActivity implements
+        ProfileFragment.OnGridImageSelectedListener ,
+        ViewPostFragment.OnCommentThreadSelectedListener{
     private static final String TAG = "ProfileActivity";
+
+    @Override
+    public void onCommentThreadSelectedListener(Photo photo) {
+        Log.d(TAG, "onCommentThreadSelectedListener:  selected a comment thread");
+
+        ViewCommentsFragment fragment = new ViewCommentsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_comments_fragment));
+        transaction.commit();
+    }
+    @Override
+    public void onGridImageSelected(Photo photo, int activityNumber) {
+        Log.d(TAG, "onGridImageSelected: selected an image gridview: " + photo.toString());
+
+        ViewPostFragment fragment = new ViewPostFragment();
+        Bundle args = new Bundle();
+        args.putParcelable(getString(R.string.photo), photo);
+        args.putInt(getString(R.string.activity_number), activityNumber);
+        fragment.setArguments(args);
+
+        FragmentTransaction transaction  = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(getString(R.string.view_post_fragment));
+        transaction.commit();
+
+    }
     private ProgressBar mProgressBar;
     private ImageView profilePhoto;
 
