@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+import android.widget.AdapterView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -35,6 +36,10 @@ import java.util.Locale;
 import java.util.TimeZone;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.DatabaseError;
+import java.util.ArrayList;
 
 /**
  * Created by Liran on 14/08/2019.
@@ -358,7 +363,8 @@ public class FirebaseMethods {
                 0,
                 profile_photo,
                 StringManipulation.condenseUsername(username),
-                website
+                website,
+                userID
         );
 
         myRef.child(mContext.getString(R.string.dbname_user_account_settings))
