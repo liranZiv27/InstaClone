@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.liran.instaclone">
-
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
@@ -62,5 +61,6 @@
         <activity android:name=".materialcamera.CaptureActivity" android:screenOrientation="portrait"/>
         <activity android:name=".materialcamera.CaptureActivity2" android:screenOrientation="portrait"/>
     </application>
+
 
 </manifest>

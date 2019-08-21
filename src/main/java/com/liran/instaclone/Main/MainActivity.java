@@ -21,12 +21,15 @@ import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.liran.instaclone.Login.LoginActivity;
 import com.liran.instaclone.R;
 import com.liran.instaclone.Utils.BottomNavigationViewHelper;
+import com.liran.instaclone.Utils.FirebaseMethods;
 import com.liran.instaclone.Utils.MainfeedListAdapter;
 import com.liran.instaclone.Utils.SectionsPagerAdapter;
 import com.liran.instaclone.Utils.UniversalImageLoader;
 import com.liran.instaclone.Utils.ViewCommentsFragment;
 import com.liran.instaclone.models.Photo;
 import com.liran.instaclone.models.UserAccountSettings;
+import com.liran.instaclone.opengl.AddToStoryDialog;
+import com.liran.instaclone.opengl.NewStoryActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class MainActivity extends AppCompatActivity  implements
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity  implements
     private static final String TAG = "MainActivity";
     private static final int ACTIVITY_NUM = 0;
     private static final int HOME_FRAGMENT = 1;
+    private static final int RESULT_ADD_NEW_STORY = 7891;
+    private final static int CAMERA_RQ = 6969;
+    private static final int REQUEST_ADD_NEW_STORY = 8719;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,17 @@ public class MainActivity extends AppCompatActivity  implements
         setupBottomNavigationView();
         setupViewPager();
 
+    }
+
+    public void openNewStoryActivity(){
+        Intent intent = new Intent(this, NewStoryActivity.class);
+        startActivityForResult(intent, REQUEST_ADD_NEW_STORY);
+    }
+
+    public void showAddToStoryDialog(){
+        Log.d(TAG, "showAddToStoryDialog: showing add to story dialog.");
+        AddToStoryDialog dialog = new AddToStoryDialog();
+        dialog.show(getFragmentManager(), getString(R.string.dialog_add_to_story));
     }
 
     public void onCommentThreadSelected(Photo photo){
@@ -106,6 +123,36 @@ public class MainActivity extends AppCompatActivity  implements
             showLayout();
         }
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult: incoming result.");
+        // Received recording or error from MaterialCamera
+
+        if (requestCode == REQUEST_ADD_NEW_STORY) {
+            Log.d(TAG, "onActivityResult: incoming new story.");
+            if (resultCode == RESULT_ADD_NEW_STORY) {
+                Log.d(TAG, "onActivityResult: got the new story.");
+                Log.d(TAG, "onActivityResult: data type: " + data.getType());
+
+                final MainFragment fragment = (MainFragment ) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + 1);
+                if (fragment != null) {
+
+                    FirebaseMethods firebaseMethods = new FirebaseMethods(this);
+                    firebaseMethods.uploadNewStory(data, fragment);
+
+                }
+                else{
+                    Log.d(TAG, "onActivityResult: could not communicate with home fragment.");
+                }
+
+
+
+            }
+        }
+    }
+
+
     /**
      * responsible for adding the 3 tabs - camera, home, messages
      */
@@ -120,7 +167,7 @@ public class MainActivity extends AppCompatActivity  implements
         TabLayout tabLayout = findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_action_name);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_main_screen);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
     /**
