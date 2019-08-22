@@ -23,27 +23,32 @@ import com.liran.instaclone.Utils.SectionsPagerAdapter;
  * Created by Liran on 13/08/2019.
  */
 
+
 public class ShareActivity extends AppCompatActivity{
     private static final String TAG = "ShareActivity";
-    private ViewPager mViewPager;
 
-    private Context mContext = ShareActivity.this;
     //constants
     private static final int ACTIVITY_NUM = 2;
     private static final int VERIFY_PERMISSIONS_REQUEST = 1;
+
+    private ViewPager mViewPager;
+
+
+    private Context mContext = ShareActivity.this;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
-        Log.d(TAG, "onCreate: started");
+        Log.d(TAG, "onCreate: started.");
+
         if(checkPermissionsArray(Permissions.PERMISSIONS)){
             setupViewPager();
         }else{
             verifyPermissions(Permissions.PERMISSIONS);
         }
-
-        //setupBottomNavigationView();
     }
+
     /**
      * return the current tab number
      * 0 = GalleryFragment
@@ -54,10 +59,6 @@ public class ShareActivity extends AppCompatActivity{
         return mViewPager.getCurrentItem();
     }
 
-    public int getTask(){
-        Log.d(TAG, String.format("getTask: TASK: %d", getIntent().getFlags()));
-        return getIntent().getFlags();
-    }
     /**
      * setup viewpager for manager the tabs
      */
@@ -74,8 +75,13 @@ public class ShareActivity extends AppCompatActivity{
 
         tabLayout.getTabAt(0).setText(getString(R.string.gallery));
         tabLayout.getTabAt(1).setText(getString(R.string.photo));
+
     }
 
+    public int getTask(){
+        //Log.d(TAG, "getTask: TASK: " + getIntent().getFlags());
+        return getIntent().getFlags();
+    }
 
     /**
      * verifiy all the permissions passed to the array
@@ -127,14 +133,15 @@ public class ShareActivity extends AppCompatActivity{
             return true;
         }
     }
+
     /**
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView(){
-        Log.d(TAG, "setupBottomNavigationView: setting up");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
+        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(mContext, this,bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);

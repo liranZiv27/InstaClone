@@ -32,15 +32,18 @@ import android.graphics.Bitmap;
  */
 
 
+
 public class NextActivity extends AppCompatActivity {
 
     private static final String TAG = "NextActivity";
+
     //firebase
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference myRef;
     private FirebaseMethods mFirebaseMethods;
+
     //widgets
     private EditText mCaption;
 
@@ -50,6 +53,7 @@ public class NextActivity extends AppCompatActivity {
     private String imgUrl;
     private Bitmap bitmap;
     private Intent intent;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +81,7 @@ public class NextActivity extends AppCompatActivity {
                 //upload the image to firebase
                 Toast.makeText(NextActivity.this, "Attempting to upload new photo", Toast.LENGTH_SHORT).show();
                 String caption = mCaption.getText().toString();
+
                 if(intent.hasExtra(getString(R.string.selected_image))){
                     imgUrl = intent.getStringExtra(getString(R.string.selected_image));
                     mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, imgUrl,null);
@@ -85,33 +90,42 @@ public class NextActivity extends AppCompatActivity {
                     bitmap = (Bitmap) intent.getParcelableExtra(getString(R.string.selected_bitmap));
                     mFirebaseMethods.uploadNewPhoto(getString(R.string.new_photo), caption, imageCount, null,bitmap);
                 }
+
+
+
             }
         });
-
         setImage();
     }
+
     private void someMethod(){
         /*
             Step 1)
             Create a data model for Photos
+
             Step 2)
             Add properties to the Photo Objects (caption, date, imageUrl, photo_id, tags, user_id)
+
             Step 3)
             Count the number of photos that the user already has.
+
             Step 4)
             a) Upload the photo to Firebase Storage
             b) insert into 'photos' node
             c) insert into 'user_photos' node
+
          */
 
-
     }
+
+
     /**
      * gets the image url from the incoming intent and displays the chosen image
      */
     private void setImage(){
         intent = getIntent();
         ImageView image = (ImageView) findViewById(R.id.imageShare);
+
         if(intent.hasExtra(getString(R.string.selected_image))){
             imgUrl = intent.getStringExtra(getString(R.string.selected_image));
             Log.d(TAG, "setImage: got new image url: " + imgUrl);
@@ -154,9 +168,12 @@ public class NextActivity extends AppCompatActivity {
                 // ...
             }
         };
+
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+
                 imageCount = mFirebaseMethods.getImageCount(dataSnapshot);
                 Log.d(TAG, "onDataChange: image count: " + imageCount);
 
@@ -168,11 +185,14 @@ public class NextActivity extends AppCompatActivity {
             }
         });
     }
+
+
     @Override
     public void onStart() {
         super.onStart();
         mAuth.addAuthStateListener(mAuthListener);
     }
+
     @Override
     public void onStop() {
         super.onStop();

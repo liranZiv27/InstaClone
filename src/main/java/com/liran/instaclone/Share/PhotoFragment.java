@@ -20,18 +20,22 @@ import com.liran.instaclone.R;
 import com.liran.instaclone.Utils.Permissions;
 import android.graphics.Bitmap;
 
+
 public class PhotoFragment extends Fragment {
     private static final String TAG = "PhotoFragment";
+
     //constant
     private static final int PHOTO_FRAGMENT_NUM = 1;
     private static final int GALLERY_FRAGMENT_NUM = 2;
     private static final int  CAMERA_REQUEST_CODE = 5;
+
 
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_photo, container, false);
         Log.d(TAG, "onCreateView: started.");
+
         Button btnLaunchCamera = (Button) view.findViewById(R.id.btnLaunchCamera);
         btnLaunchCamera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,8 +55,19 @@ public class PhotoFragment extends Fragment {
                 }
             }
         });
+
         return view;
     }
+
+    private boolean isRootTask(){
+        if(((ShareActivity)getActivity()).getTask() == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -60,6 +75,7 @@ public class PhotoFragment extends Fragment {
         if(requestCode == CAMERA_REQUEST_CODE){
             Log.d(TAG, "onActivityResult: done taking a photo.");
             Log.d(TAG, "onActivityResult: attempting to navigate to final share screen.");
+
             Bitmap bitmap;
             bitmap = (Bitmap) data.getExtras().get("data");
 
@@ -77,20 +93,14 @@ public class PhotoFragment extends Fragment {
                     Log.d(TAG, "onActivityResult: received new bitmap from camera: " + bitmap);
                     Intent intent = new Intent(getActivity(), AccountSettingsActivity.class);
                     intent.putExtra(getString(R.string.selected_bitmap), bitmap);
-                    intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.edit_profile_fragment));
+                    intent.putExtra(getString(R.string.return_to_fragment), getString(R.string.view_post_fragment));
                     startActivity(intent);
                     getActivity().finish();
                 }catch (NullPointerException e){
                     Log.d(TAG, "onActivityResult: NullPointerException: " + e.getMessage());
                 }
-            }        }
-    }
-    private boolean isRootTask(){
-        if(((ShareActivity)getActivity()).getTask() == 0){
-            return true;
-        }
-        else{
-            return false;
+            }
+
         }
     }
 }

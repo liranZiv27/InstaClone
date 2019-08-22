@@ -51,7 +51,6 @@ public abstract class BaseGalleryFragment extends Fragment
     mSaveStory = (RelativeLayout) view.findViewById(R.id.save_story);
     mAddToStory = view.findViewById(R.id.add_to_story);
 
-//    mPrimaryColor = getArguments().getInt(tabian.com.instagramclonetest.materialcamera.internal.CameraIntentKey.PRIMARY_COLOR);
     if (CameraUtil.isColorDark(mPrimaryColor)) {
 //      mPrimaryColor = CameraUtil.darkenColor(mPrimaryColor);
       final int textColor = ContextCompat.getColor(view.getContext(), R.color.mcam_color_light);

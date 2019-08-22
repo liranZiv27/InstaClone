@@ -48,10 +48,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class MainfeedListAdapter extends ArrayAdapter<Photo> {
+
     public interface OnLoadMoreItemsListener{
         void onLoadMoreItems();
     }
     OnLoadMoreItemsListener mOnLoadMoreItemsListener;
+
     private static final String TAG = "MainfeedListAdapter";
 
     private LayoutInflater mInflater;
@@ -67,6 +69,9 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         this.mContext = context;
         mReference = FirebaseDatabase.getInstance().getReference();
 
+//        for(Photo photo: objects){
+//            Log.d(TAG, "MainfeedListAdapter: photo id: " + photo.getPhoto_id());
+//        }
     }
 
     static class ViewHolder{
@@ -106,17 +111,21 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             holder.caption = (TextView) convertView.findViewById(R.id.image_caption);
             holder.timeDetla = (TextView) convertView.findViewById(R.id.image_time_posted);
             holder.mprofileImage = (CircleImageView) convertView.findViewById(R.id.profile_photo);
+
             convertView.setTag(holder);
         }
         else{
             holder = (ViewHolder) convertView.getTag();
         }
+
         holder.photo = getItem(position);
         holder.detector = new GestureDetector(mContext, new GestureListener(holder));
         holder.users = new StringBuilder();
         holder.heart = new Heart(holder.heartWhite, holder.heartRed);
+
         //get the current users username (need for checking likes string)
         getCurrentUsername();
+
         //get likes string
         getLikesString(holder);
 
@@ -130,10 +139,12 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: loading comment thread for " + getItem(position).getPhoto_id());
-                ((MainActivity)mContext).onCommentThreadSelected(getItem(position));
+                ((MainActivity)mContext).onCommentThreadSelected(getItem(position),
+                        mContext.getString(R.string.home_activity));
 
                 //going to need to do something else?
                 ((MainActivity)mContext).hideLayout();
+
             }
         });
 
@@ -203,11 +214,11 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                     holder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            ((MainActivity)mContext).onCommentThreadSelected(getItem(position));
+                            ((MainActivity)mContext).onCommentThreadSelected(getItem(position),
+                                    mContext.getString(R.string.home_activity));
 
                             //another thing?
                             ((MainActivity)mContext).hideLayout();
-
                         }
                     });
                 }
@@ -242,11 +253,14 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
             }
         });
+
         if(reachedEndOfList(position)){
             loadMoreData();
         }
+
         return convertView;
     }
+
     private boolean reachedEndOfList(int position){
         return position == getCount() - 1;
     }
@@ -265,6 +279,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             Log.e(TAG, "loadMoreData: ClassCastException: " +e.getMessage() );
         }
     }
+
     public class GestureListener extends GestureDetector.SimpleOnGestureListener{
 
         ViewHolder mHolder;
@@ -280,6 +295,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         @Override
         public boolean onDoubleTap(MotionEvent e) {
             Log.d(TAG, "onDoubleTap: double tap detected.");
+
             Log.d(TAG, "onDoubleTap: clicked on photo: " + mHolder.photo.getPhoto_id());
 
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
@@ -298,7 +314,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                         if(mHolder.likeByCurrentUser
 //                                && singleSnapshot.getValue(Like.class).getUser_id()
 //                                        .equals(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                             ){
+                                ){
 
                             mReference.child(mContext.getString(R.string.dbname_photos))
                                     .child(mHolder.photo.getPhoto_id())
@@ -307,7 +323,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
                                     .removeValue();
 ///
                             mReference.child(mContext.getString(R.string.dbname_user_photos))
-                                    //.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+//                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .child(mHolder.photo.getUser_id())
                                     .child(mHolder.photo.getPhoto_id())
                                     .child(mContext.getString(R.string.field_likes))
                                     .child(keyID)
@@ -338,6 +355,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
             return true;
         }
     }
+
     private void addNewLike(final ViewHolder holder){
         Log.d(TAG, "addNewLike: adding new like");
 
@@ -388,10 +406,8 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private void getLikesString(final ViewHolder holder){
         Log.d(TAG, "getLikesString: getting likes string");
 
+        Log.d(TAG, "getLikesString: photo id: " + holder.photo.getPhoto_id());
         try{
-
-
-
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference();
             Query query = reference
                     .child(mContext.getString(R.string.dbname_photos))
@@ -421,7 +437,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
 
                                 String[] splitUsers = holder.users.toString().split(",");
 
-                                if(holder.users.toString().contains(currentUsername + ",")){
+                                if(holder.users.toString().contains(currentUsername + ",")){//mitch, mitchell.tabian
                                     holder.likeByCurrentUser = true;
                                 }else{
                                     holder.likeByCurrentUser = false;
@@ -489,6 +505,7 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
     private void setupLikesString(final ViewHolder holder, String likesString){
         Log.d(TAG, "setupLikesString: likes string:" + holder.likesString);
 
+        Log.d(TAG, "setupLikesString: photo id: " + holder.photo.getPhoto_id());
         if(holder.likeByCurrentUser){
             Log.d(TAG, "setupLikesString: photo is liked by current user");
             holder.heartWhite.setVisibility(View.GONE);
@@ -537,4 +554,5 @@ public class MainfeedListAdapter extends ArrayAdapter<Photo> {
         }
         return difference;
     }
+
 }

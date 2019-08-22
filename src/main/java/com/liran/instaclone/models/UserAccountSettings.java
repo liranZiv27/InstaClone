@@ -16,6 +16,9 @@ public class UserAccountSettings implements Parcelable{
     private String username;
     private String website;
     private String user_id;
+    private String email;
+    private long phone_number;
+
 
 
     public UserAccountSettings(String description, String display_name, long followers,
@@ -61,6 +64,8 @@ public class UserAccountSettings implements Parcelable{
         dest.writeString(username);
         dest.writeString(website);
         dest.writeString(user_id);
+        dest.writeString(email);
+        dest.writeLong(phone_number);
     }
     public static final Creator<UserAccountSettings> CREATOR = new Creator<UserAccountSettings>() {
         @Override
@@ -145,6 +150,21 @@ public class UserAccountSettings implements Parcelable{
         this.website = website;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public long getPhone_number() {
+        return phone_number;
+    }
+
+    public void setPhone_number(long phone_number) {
+        this.phone_number = phone_number;
+    }
 
     @Override
     public String toString() {

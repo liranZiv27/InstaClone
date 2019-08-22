@@ -1,6 +1,9 @@
 <resources>
+
+    <string name="app_name">InstaClone</string>
     <!-- fragment names -->
     <string name="edit_profile_fragment">Edit Profile</string>
+
     <string name="view_post_fragment">View Post</string>
     <string name="sign_out_fragment">Sign Out</string>
     <string name="profile_fragment">Profile</string>
@@ -86,8 +89,8 @@
     <string name="evp_retry">RETRY</string>
 
     <!-- Spring Header Stuff -->
-    <string name="spring_header_behavior">tabian.com.instagramclonetest.springheader.SpringHeaderBehavior</string>
-    <string name="dependent_view_behavior">tabian.com.instagramclonetest.DependentViewBehavior</string>
+    <string name="spring_header_behavior">com.liran.instaclone.springheader.SpringHeaderBehavior</string>
+    <string name="dependent_view_behavior">com.liran.instaclone.DependentViewBehavior</string>
 
     <string name="simple_refresh_header_text_below_threshold">below fold</string>
     <string name="simple_refresh_header_text_above_threshold">above folder</string>

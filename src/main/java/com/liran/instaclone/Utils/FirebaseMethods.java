@@ -1,5 +1,6 @@
 package com.liran.instaclone.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.liran.instaclone.Main.MainActivity;
 import com.liran.instaclone.Main.MainFragment;
 import com.liran.instaclone.Profile.AccountSettingsActivity;
 import com.liran.instaclone.R;
+import com.liran.instaclone.Share.NextActivity;
 import com.liran.instaclone.materialcamera.MaterialCamera;
 import com.liran.instaclone.models.Photo;
 import com.liran.instaclone.models.Story;
@@ -78,7 +80,7 @@ public class FirebaseMethods {
 
     public void uploadNewPhoto(String photoType, final String caption,final int count, final String imgUrl,
                                Bitmap bm){
-        Log.d(TAG, "uploadNewPhoto: attempting to uplaod new photo.");
+        Log.d(TAG, "uploadNewPhoto: attempting to upload new photo.");
 
         FilePaths filePaths = new FilePaths();
         //case1) new photo
@@ -123,16 +125,21 @@ public class FirebaseMethods {
                 @Override
                 public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
                     double progress = (100 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-
+                    NextActivity activity = (NextActivity) mContext;
                     if(progress - 15 > mPhotoUploadProgress){
-                        Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
-                        mPhotoUploadProgress = progress;
+                        if (!activity.isFinishing()){
+                            Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
+                            mPhotoUploadProgress = progress;    
+                        }
+                        else{
+                            Log.d(TAG, "onProgress: activity is finishing!");
+                        }
+                        
                     }
 
                     Log.d(TAG, "onProgress: upload progress: " + progress + "% done");
                 }
             });
-
         }
         //case new profile photo
         else if(photoType.equals(mContext.getString(R.string.profile_photo))){
@@ -183,7 +190,6 @@ public class FirebaseMethods {
                         Toast.makeText(mContext, "photo upload progress: " + String.format("%.0f", progress) + "%", Toast.LENGTH_SHORT).show();
                         mPhotoUploadProgress = progress;
                     }
-
                     Log.d(TAG, "onProgress: upload progress: " + progress + "% done");
                 }
             });

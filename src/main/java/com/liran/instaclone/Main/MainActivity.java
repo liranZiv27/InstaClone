@@ -32,43 +32,47 @@ import com.liran.instaclone.opengl.AddToStoryDialog;
 import com.liran.instaclone.opengl.NewStoryActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public class MainActivity extends AppCompatActivity  implements
+
+public class MainActivity extends AppCompatActivity implements
         MainfeedListAdapter.OnLoadMoreItemsListener{
 
     @Override
     public void onLoadMoreItems() {
         Log.d(TAG, "onLoadMoreItems: displaying more photos");
-        MainFragment fragment = (MainFragment )getSupportFragmentManager()
+        MainFragment fragment = (MainFragment)getSupportFragmentManager()
                 .findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + mViewPager.getCurrentItem());
         if(fragment != null){
             fragment.displayMorePhotos();
         }
     }
-    private Context mContext = MainActivity.this;
 
-    //firebase
-    private FirebaseAuth mAuth;
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    //widgets
-    private ViewPager mViewPager;
-    private FrameLayout mFrameLayout;
-    private RelativeLayout mRelativeLayout;
-
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "HomeActivity";
     private static final int ACTIVITY_NUM = 0;
     private static final int HOME_FRAGMENT = 1;
     private static final int RESULT_ADD_NEW_STORY = 7891;
     private final static int CAMERA_RQ = 6969;
     private static final int REQUEST_ADD_NEW_STORY = 8719;
 
+    private Context mContext = MainActivity.this;
+
+    //firebase
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+
+    //widgets
+    private ViewPager mViewPager;
+    private FrameLayout mFrameLayout;
+    private RelativeLayout mRelativeLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: starting");
+        Log.d(TAG, "onCreate: starting.");
         mViewPager = (ViewPager) findViewById(R.id.viewpager_container);
         mFrameLayout = (FrameLayout) findViewById(R.id.container);
         mRelativeLayout = (RelativeLayout) findViewById(R.id.relLayoutParent);
+
         setupFirebaseAuth();
 
         initImageLoader();
@@ -88,7 +92,8 @@ public class MainActivity extends AppCompatActivity  implements
         dialog.show(getFragmentManager(), getString(R.string.dialog_add_to_story));
     }
 
-    public void onCommentThreadSelected(Photo photo){
+
+    public void onCommentThreadSelected(Photo photo, String callingActivity){
         Log.d(TAG, "onCommentThreadSelected: selected a coemment thread");
 
         ViewCommentsFragment fragment  = new ViewCommentsFragment();
@@ -103,6 +108,7 @@ public class MainActivity extends AppCompatActivity  implements
         transaction.commit();
 
     }
+
     public void hideLayout(){
         Log.d(TAG, "hideLayout: hiding layout");
         mRelativeLayout.setVisibility(View.GONE);
@@ -123,6 +129,8 @@ public class MainActivity extends AppCompatActivity  implements
             showLayout();
         }
     }
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -135,7 +143,7 @@ public class MainActivity extends AppCompatActivity  implements
                 Log.d(TAG, "onActivityResult: got the new story.");
                 Log.d(TAG, "onActivityResult: data type: " + data.getType());
 
-                final MainFragment fragment = (MainFragment ) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + 1);
+                final MainFragment fragment = (MainFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.viewpager_container + ":" + 1);
                 if (fragment != null) {
 
                     FirebaseMethods firebaseMethods = new FirebaseMethods(this);
@@ -153,39 +161,40 @@ public class MainActivity extends AppCompatActivity  implements
     }
 
 
+    private void initImageLoader(){
+        UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
+        ImageLoader.getInstance().init(universalImageLoader.getConfig());
+    }
+
     /**
-     * responsible for adding the 3 tabs - camera, home, messages
+     * Responsible for adding the 3 tabs: Camera, Home, Messages
      */
-    private void setupViewPager (){
+    private void setupViewPager(){
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new CameraFragment());//index 0
-        adapter.addFragment(new MainFragment());//index 1
-        adapter.addFragment(new MessagesFragment());//index 2
+        adapter.addFragment(new CameraFragment()); //index 0
+        adapter.addFragment(new MainFragment()); //index 1
+        adapter.addFragment(new MessagesFragment()); //index 2
         mViewPager.setAdapter(adapter);
 
-
-        TabLayout tabLayout = findViewById(R.id.tabs);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_camera);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_main_screen);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_arrow);
     }
+
     /**
      * BottomNavigationView setup
      */
     private void setupBottomNavigationView(){
-        Log.d(TAG, "setupBottomNavigationView: setting up");
-        BottomNavigationViewEx bottomNavigationViewEx = findViewById(R.id.bottomNavViewBar);
+        Log.d(TAG, "setupBottomNavigationView: setting up BottomNavigationView");
+        BottomNavigationViewEx bottomNavigationViewEx = (BottomNavigationViewEx) findViewById(R.id.bottomNavViewBar);
         BottomNavigationViewHelper.setupBottomNavigationView(bottomNavigationViewEx);
-        BottomNavigationViewHelper.enableNavigation(mContext, this, bottomNavigationViewEx);
+        BottomNavigationViewHelper.enableNavigation(mContext, this,bottomNavigationViewEx);
         Menu menu = bottomNavigationViewEx.getMenu();
         MenuItem menuItem = menu.getItem(ACTIVITY_NUM);
         menuItem.setChecked(true);
-    }
-
-    private void initImageLoader(){
-        UniversalImageLoader universalImageLoader = new UniversalImageLoader(mContext);
-        ImageLoader.getInstance().init(universalImageLoader.getConfig());
     }
 
 
@@ -248,4 +257,6 @@ public class MainActivity extends AppCompatActivity  implements
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+
+
 }

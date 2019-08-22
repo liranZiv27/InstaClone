@@ -97,18 +97,19 @@ public class GalleryFragment extends Fragment {
         return view;
     }
     private boolean isRootTask(){
-        if(((ShareActivity)getActivity()).getTask() == 0){
+        if(((ShareActivity)getActivity()).getTask() != 0){
             return true;
         }
         else{
             return false;
         }
     }
+
     private void init(){
         FilePaths filePaths = new FilePaths();
 
         //check for other folders indide "/storage/emulated/0/pictures"
-        if(FileSearch.getDirectoryPaths(filePaths.PICTURES) != null){
+        if (FileSearch.getDirectoryPaths(filePaths.PICTURES) != null) {
             directories = FileSearch.getDirectoryPaths(filePaths.PICTURES);
         }
         directories.add(filePaths.CAMERA);
@@ -116,7 +117,6 @@ public class GalleryFragment extends Fragment {
         ArrayList<String> directoryNames = new ArrayList<>();
         for (int i = 0; i < directories.size(); i++) {
             Log.d(TAG, "init: directory: " + directories.get(i));
-
             int index = directories.get(i).lastIndexOf("/");
             String string = directories.get(i).substring(index);
             directoryNames.add(string);
@@ -143,6 +143,7 @@ public class GalleryFragment extends Fragment {
         });
     }
 
+
     private void setupGridView(String selectedDirectory){
         Log.d(TAG, "setupGridView: directory chosen: " + selectedDirectory);
         final ArrayList<String> imgURLs = FileSearch.getFilePaths(selectedDirectory);
@@ -158,8 +159,10 @@ public class GalleryFragment extends Fragment {
 
         //set the first image to be displayed when the activity fragment view is inflated
         try{
-            setImage(imgURLs.get(0), galleryImage, mAppend);
-            mSelectedImage = imgURLs.get(0);
+            if(imgURLs.size() > 0){
+                setImage(imgURLs.get(0), galleryImage, mAppend);
+                mSelectedImage = imgURLs.get(0);
+            }
         }catch (ArrayIndexOutOfBoundsException e){
             Log.e(TAG, "setupGridView: ArrayIndexOutOfBoundsException: " +e.getMessage() );
         }
@@ -173,7 +176,10 @@ public class GalleryFragment extends Fragment {
                 mSelectedImage = imgURLs.get(position);
             }
         });
+
     }
+
+
     private void setImage(String imgURL, ImageView image, String append){
         Log.d(TAG, "setImage: setting image");
 
